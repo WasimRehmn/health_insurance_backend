@@ -1,2 +1,1 @@
-web: gunicorn wsgi:app
-
+gunicorn -b 0.0.0.0:8000 src.wsgi:application
