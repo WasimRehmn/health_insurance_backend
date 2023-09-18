@@ -43,7 +43,16 @@ def premium_breakout(user_data, primary, secondary=None):
                         adult_2 = secondary[sum_assured] * 0.5517
                         children = group[sum_assured] - (adult_1 + adult_2)
                         
-                        premium.append({
+                        children_premium = []
+                        for i in range(1, user_data["children"] + 1):
+                            children_premium.append({
+                                    "user_type": f"child_{i}",
+                                    "base_rate": (children * 2)/user_data["children"],
+                                    "floater_discount": 50,
+                                    "discounted_rate": children/user_data["children"]
+                                })
+                        
+                        temp = {
                             "sum_assured": sum_assured,
                             "total": group[sum_assured],
                             "premium_breaks": [
@@ -58,15 +67,12 @@ def premium_breakout(user_data, primary, secondary=None):
                                     "base_rate": secondary[sum_assured],
                                     "floater_discount": 45,
                                     "discounted_rate": adult_2
-                                },
-                                {
-                                    "user_type": "children",
-                                    "base_rate": children * 2,
-                                    "floater_discount": 50,
-                                    "discounted_rate": children
                                 }
                             ]
-                        })
+                        }
+                        temp["premium_breaks"].extend(children_premium)
+                        premium.append(temp)
+                        
                     else:
                         adult_1 = individual[sum_assured]
                         adult_2 = secondary[sum_assured] / 2
@@ -103,8 +109,16 @@ def premium_breakout(user_data, primary, secondary=None):
                         
                         adult_1 = individual[sum_assured]
                         children = group[sum_assured] - adult_1
+                        children_premium = []
                         
-                        premium.append({
+                        for i in range(1, user_data["children"] + 1):
+                            children_premium.append({
+                                "user_type": f"child_{i}",
+                                "base_rate": (children * 2)/user_data["children"],
+                                "floater_discount": 50,
+                                "discounted_rate": children/user_data["children"]
+                            })
+                        temp={
                             "sum_assured": sum_assured,
                             "total": group[sum_assured],
                             "premium_breaks": [
@@ -113,15 +127,11 @@ def premium_breakout(user_data, primary, secondary=None):
                                     "base_rate": adult_1,
                                     "floater_discount": 0,
                                     "discounted_rate": adult_1
-                                },
-                                {
-                                    "user_type": "children",
-                                    "base_rate": children * 2,
-                                    "floater_discount": 50,
-                                    "discounted_rate": children
                                 }
                             ]
-                        })
+                        }
+                        temp["premium_breaks"].extend(children_premium)
+                        premium.append(temp)
                     else:
                         adult_1 = individual[sum_assured]
                         
