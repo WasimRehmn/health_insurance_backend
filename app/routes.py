@@ -3,7 +3,7 @@ from marshmallow import  ValidationError
 from app import app, mongo
 from app.model import get_age_range, premium_breakout, PremiumDataSchema
 
-@app.route("/premium", methods=["GET"])
+@app.route("/premium", methods=["POST"])
 def calculate_premium():
     data = request.json
     
