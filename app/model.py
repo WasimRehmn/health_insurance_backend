@@ -1,4 +1,4 @@
-
+from marshmallow import Schema, fields, validate, ValidationError
 
 def get_age_range(age: int):
     if 18 <= age <= 24:
@@ -140,3 +140,19 @@ def premium_breakout(user_data, primary, secondary=None):
         return premium
     except Exception as e:
         print(e)
+
+
+class PremiumDataSchema(Schema):
+    adults = fields.Integer(required=True, validate=validate.Range(min=1, max=2))
+    children = fields.Integer(required=True, validate=validate.Range(min=0, max=4))
+    city = fields.String(required=True, validate=validate.Length(min=1))
+    ages = fields.Dict(required=True)
+
+    @staticmethod
+    def validate_ages(data):
+        for key, value in data.items():
+            if key.endswith('a') and not (18 <= value <= 99):
+                raise ValidationError(f"Age for key '{key}' must be between 18 and 99")
+            elif key.endswith('c') and not (1 <= value <= 17):
+                raise ValidationError(f"Age for key '{key}' must be between 1 and 17")
+
