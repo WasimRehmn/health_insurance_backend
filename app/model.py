@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate, ValidationError
+from marshmallow import Schema, fields, validate, ValidationError, post_load
 
 def get_age_range(age: int):
     if 18 <= age <= 24:
@@ -156,3 +156,6 @@ class PremiumDataSchema(Schema):
             elif key.endswith('c') and not (1 <= value <= 17):
                 raise ValidationError(f"Age for key '{key}' must be between 1 and 17")
 
+    @post_load
+    def validate_input(self, data, **kwargs):
+        self.validate_ages(data['ages'])
